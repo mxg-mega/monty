@@ -82,7 +82,7 @@ int main(int ac, char **av)
 		}
 		else
 		{
-			if (cmd[1] == NULL || stringToInteger(cmd[1]) == -1)
+			if (cmd[1] == NULL || is_validNumber(cmd[1]) == 1)
 			{
 				free(buffer);
 				fclose(file);

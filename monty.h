@@ -43,6 +43,7 @@ extern instruction_t instructions[];
 char** getcommand(char *buffer);
 void free_line(char **array);
 int is_Empty(stack_t *stack);
+int is_validNumber(const char *str);
 
 extern void push(stack_t **stack, unsigned int line_number);
 extern void pall(stack_t **stack, unsigned int line_number);

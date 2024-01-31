@@ -24,3 +24,22 @@ int stringToInteger(const char *str)
 	}
 	return ((int)result);
 }
+
+/**
+ * is_validNumber - function checks if a string contain only numbers
+ * @str: the string
+ *
+ * Return: 0 if true 1 if false
+ */
+int is_validNumber(const char *str)
+{
+	while (*str != '\0')
+	{
+		if ((*str < '0' || *str > '9') && *str != '-')
+		{
+			return (1);
+		}
+		str++;
+	}
+	return (0);
+}
