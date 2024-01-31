@@ -17,7 +17,7 @@ void free_line(char **array);
 int main(int ac, char **av)
 {
 	FILE *file = NULL;
-	char *buffer = malloc(sizeof(char) * 1024);
+	char *buffer = malloc(sizeof(char) * 1024), *pall = "pall";
 	unsigned int lineCount = 0;
 	int cmdArg = 0;
 	size_t buffsize = 1024;
@@ -78,26 +78,30 @@ int main(int ac, char **av)
 			free_line(cmd);
 			return (EXIT_FAILURE);
 		}
-		if (cmd[1] != NULL)
+
+		if (strcmp(instruct->opcode, pall) == 0)
 		{
-			cmdArg = stringToInteger(cmd[1]);
-			if (cmdArg == -1 || cmd[2] != NULL)
+			instruct->f(&head, lineCount);
+		}
+		else
+		{
+			if (cmd[1] == NULL)
 			{
 				free(buffer);
 				fclose(file);
-				free_line(cmd);
 				if (head != NULL)
 				{
 					clear_stack(head);
 				}
+				free_line(cmd);
 				fprintf(stderr, "L%u: usage: push integer\n", lineCount);
 				return (EXIT_FAILURE);
 			}
-			instruct->f(&head, (unsigned int)cmdArg);
-		}
-		else
-		{
-			instruct->f(&head, lineCount);
+			else
+			{
+				cmdArg = atoi(cmd[1]);
+				instruct->f(&head, (unsigned int)cmdArg);
+			}
 		}
 		free_line(cmd);
 	}
@@ -141,7 +145,7 @@ char** getcommand(char *buffer)
 
 int count_args(char **cmd)
 {
-	int count = 0, i = 0;
+	int i = 0;
 
 	if (cmd == NULL)
 	{
@@ -149,9 +153,8 @@ int count_args(char **cmd)
 	}
 	for (i = 0; cmd[i] != NULL; i++)
 	{
-		count++;
 	}
-	return (count);
+	return (i);
 }
 
 void free_line(char **array)
