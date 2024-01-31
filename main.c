@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+int count_args(char **cmd);
 char** getcommand(char *buffer);
 void free_line(char **array);
 
@@ -49,13 +50,21 @@ int main(int ac, char **av)
 		{
 			free(buffer);
 			fclose(file);
-			fprintf(stderr, "out of bound, to many or little arguments at line %u\n", lineCount);
+			fprintf(stderr, "out of bound, to many or little arguments %s at line %u\n", cmd[0], lineCount);
+			free_line(cmd);
 			if (head != NULL)
 			{
 				clear_stack(head);
 			}
 			return (EXIT_FAILURE);
 		}
+
+		if (cmd[0] == NULL)
+		{
+			free_line(cmd);
+			continue;
+		}
+
 		instruct = get_opcode_instruc(cmd[0]);
 		if (instruct == NULL)
 		{
@@ -71,8 +80,8 @@ int main(int ac, char **av)
 		}
 		if (cmd[1] != NULL)
 		{
-			cmdArg = atoi(cmd[1]);
-			if (cmdArg == 0)
+			cmdArg = stringToInteger(cmd[1]);
+			if (cmdArg == -1 || cmd[2] != NULL)
 			{
 				free(buffer);
 				fclose(file);
@@ -126,31 +135,23 @@ char** getcommand(char *buffer)
 		argCount++;
 		token = strtok(NULL, delim);
 	}
-	if (argCount > 2)
-	{
-		free_line(args);
-		return (NULL);
-	}
 	args[2] = NULL;
 	return (args);
 }
 
-int stringToInteger(const char *str)
+int count_args(char **cmd)
 {
-	char *endptr;
-	long result = strtol(str, &endptr, 10);
+	int count = 0, i = 0;
 
-	if (*endptr != '\0' || str == endptr)
+	if (cmd == NULL)
 	{
-		return (-1);
+		return(-1);
 	}
-
-	if (result < INT_MIN || result > INT_MAX)
+	for (i = 0; cmd[i] != NULL; i++)
 	{
-		return (-1);
+		count++;
 	}
-
-	return ((int)result);
+	return (count);
 }
 
 void free_line(char **array)
