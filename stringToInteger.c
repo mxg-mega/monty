@@ -2,6 +2,12 @@
 #include <stdlib.h>
 #include "monty.h"
 
+/**
+ * stringToInteger - function converts strings to integers
+ * @str: the string
+ *
+ * Return: the int or -1 if fail
+ */
 int stringToInteger(const char *str)
 {
 	char *endptr;

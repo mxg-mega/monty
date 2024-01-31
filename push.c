@@ -2,8 +2,8 @@
 
 /**
  * push - function pushes a data into a stack(Queue)
- * @stack - the stack that a data will be pushed to
- * @line_number - the line number
+ * @stack: the stack that a data will be pushed to
+ * @line_number: the line number
  *
  * Return - nothing
  */

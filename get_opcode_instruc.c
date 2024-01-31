@@ -1,10 +1,5 @@
 #include "monty.h"
 
-instruction_t instructions[] = {
-	{"push", push},
-	{"pall", pall},
-};
-
 /**
  * get_opcode_instruc - gets the opcode function and returns it
  * @opcode: the opcode string
@@ -14,6 +9,10 @@ instruction_t instructions[] = {
 instruction_t *get_opcode_instruc(char *opcode)
 {
 	int i = 0, len = 0;
+	static instruction_t instructions[] = {
+		{"push", push},
+		{"pall", pall},
+	};
 
 	if (opcode == NULL)
 	{

@@ -4,8 +4,6 @@
 #include <stdlib.h>
 
 int count_args(char **cmd);
-char** getcommand(char *buffer);
-void free_line(char **array);
 
 /**
  * main - maint entry point
@@ -50,7 +48,6 @@ int main(int ac, char **av)
 		{
 			free(buffer);
 			fclose(file);
-			fprintf(stderr, "out of bound, to many or little arguments %s at line %u\n", cmd[0], lineCount);
 			free_line(cmd);
 			if (head != NULL)
 			{
@@ -111,11 +108,17 @@ int main(int ac, char **av)
 	return (EXIT_SUCCESS);
 }
 
-char** getcommand(char *buffer)
+/**
+ * getcommand - function tokenizes the line of buffer taken to cmd and arg
+ * @buffer: buffer taken
+ *
+ * Return: 2d array or NULL if malloc fail or any fail
+ */
+char **getcommand(char *buffer)
 {
 	char *token = NULL, *delim = " \n\t";
 	int argCount = 0, i = 0;
-	char **args = malloc(sizeof(char*) * 3);
+	char **args = malloc(sizeof(char *) * 3);
 
 	if (args == NULL)
 	{
@@ -143,13 +146,19 @@ char** getcommand(char *buffer)
 	return (args);
 }
 
+/**
+ * count_args - function counts the number of arguments
+ * @cmd: a 2d array of the command
+ *
+ * Return: number of args or -1 if fail
+ */
 int count_args(char **cmd)
 {
 	int i = 0;
 
 	if (cmd == NULL)
 	{
-		return(-1);
+		return (-1);
 	}
 	for (i = 0; cmd[i] != NULL; i++)
 	{
@@ -157,6 +166,12 @@ int count_args(char **cmd)
 	return (i);
 }
 
+/**
+ * free_line - function frees the memory of 2d array
+ * @array: 2d array
+ *
+ * Return: no return
+ */
 void free_line(char **array)
 {
 	int i = 0;
