@@ -96,7 +96,7 @@ int main(int ac, char **av)
 			}
 			else
 			{
-				cmdArg = atoi(cmd[1]);
+				cmdArg = stringToInteger(cmd[1]);
 				instruct->f(&head, (unsigned int)cmdArg);
 			}
 		}
