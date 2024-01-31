@@ -31,6 +31,7 @@ int main(int ac, char **av)
 	}
 	if (buffer == NULL)
 	{
+		fprintf(stderr, "Error: malloc failed\n");
 		exit(EXIT_FAILURE);
 	}
 	memset(buffer, 0, 1024);
@@ -117,6 +118,7 @@ char** getcommand(char *buffer)
 		args[argCount] = malloc(strlen(token) + 2);
 		if (args[argCount] == NULL)
 		{
+			fprintf(stderr, "Error: malloc failed\n");
 			return (NULL);
 		}
 		strcpy(args[argCount], token);
