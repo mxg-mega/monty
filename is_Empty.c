@@ -6,9 +6,9 @@
  *
  * Return: 0 if empty and -1 if not
  */
-int is_Empty(stack_t **stack)
+int is_Empty(stack_t *stack)
 {
-	if (*stack == NULL)
+	if (stack == NULL)
 	{
 		return (0);
 	}

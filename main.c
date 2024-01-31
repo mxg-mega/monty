@@ -17,13 +17,16 @@ int main(int ac, char **av)
 {
 	FILE *file = NULL;
 	char *buffer = malloc(sizeof(char) * 1024);
-	int lineCount = 0;
+	unsigned int lineCount = 0;
+	int cmdArg = 0;
 	size_t buffsize = 1024;
 	char **cmd = NULL;
+	instruction_t *instruct = NULL;
+	stack_t *head = NULL;
 
 	if (ac != 2)
 	{
-		fprintf(stderr, "monty file\n");
+		fprintf(stderr, "USAGE: monty file\n");
 		exit(EXIT_FAILURE);
 	}
 	if (buffer == NULL)
@@ -39,21 +42,58 @@ int main(int ac, char **av)
 	}
 	while (fgets(buffer, buffsize, file) != NULL)
 	{
-		printf("command: %s, length of command: %lu\n", buffer, strlen(buffer));
+		++lineCount;
 		cmd = getcommand(buffer);
 		if (cmd == NULL)
 		{
 			free(buffer);
 			fclose(file);
-			free_line(cmd);
-			fprintf(stderr, "out of bound, to many or little arguments at line %d\n", lineCount);
+			fprintf(stderr, "out of bound, to many or little arguments at line %u\n", lineCount);
+			if (head != NULL)
+			{
+				clear_stack(head);
+			}
 			return (EXIT_FAILURE);
 		}
-		printf("command: %s - argument: %s\n", cmd[0], cmd[1]);
+		instruct = get_opcode_instruc(cmd[0]);
+		if (instruct == NULL)
+		{
+			if (head != NULL)
+			{
+				clear_stack(head);
+			}
+			fprintf(stderr, "L%u: unknown instruction %s\n", lineCount, cmd[0]);
+			free(buffer);
+			fclose(file);
+			free_line(cmd);
+			return (EXIT_FAILURE);
+		}
+		if (cmd[1] != NULL)
+		{
+			cmdArg = atoi(cmd[1]);
+			if (cmdArg == 0)
+			{
+				free(buffer);
+				fclose(file);
+				free_line(cmd);
+				if (head != NULL)
+				{
+					clear_stack(head);
+				}
+				fprintf(stderr, "L%u: usage: push integer\n", lineCount);
+				return (EXIT_FAILURE);
+			}
+			instruct->f(&head, (unsigned int)cmdArg);
+		}
+		else
+		{
+			instruct->f(&head, lineCount);
+		}
 		free_line(cmd);
 	}
 	free(buffer);
 	fclose(file);
+	clear_stack(head);
 	return (EXIT_SUCCESS);
 }
 
@@ -72,7 +112,7 @@ char** getcommand(char *buffer)
 		args[i] = NULL;
 	}
 	token = strtok(buffer, delim);
-	while (token != NULL && argCount <= 2)
+	while (token != NULL && argCount < 2)
 	{
 		args[argCount] = malloc(strlen(token) + 2);
 		if (args[argCount] == NULL)
@@ -92,6 +132,25 @@ char** getcommand(char *buffer)
 	args[2] = NULL;
 	return (args);
 }
+
+int stringToInteger(const char *str)
+{
+	char *endptr;
+	long result = strtol(str, &endptr, 10);
+
+	if (*endptr != '\0' || str == endptr)
+	{
+		return (-1);
+	}
+
+	if (result < INT_MIN || result > INT_MAX)
+	{
+		return (-1);
+	}
+
+	return ((int)result);
+}
+
 void free_line(char **array)
 {
 	int i = 0;

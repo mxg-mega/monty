@@ -19,7 +19,7 @@ void push(stack_t **stack, unsigned int line_number)
 	new_stack->n = line_number;
 	new_stack->prev = NULL;
 	new_stack->next = NULL;
-	if (is_Empty(stack) == 0)
+	if (is_Empty(*stack) == 0)
 	{
 		*stack = new_stack;
 	}
