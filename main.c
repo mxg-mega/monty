@@ -5,6 +5,11 @@
 
 int count_args(char **cmd);
 
+instruction_t instructions[] = {
+	{"push", push},
+	{"pall", pall},
+};
+
 /**
  * main - maint entry point
  * @ac: number of arguments

@@ -8,18 +8,15 @@
  */
 instruction_t *get_opcode_instruc(char *opcode)
 {
-	int i = 0, len = 0;
-	static instruction_t instructions[] = {
-		{"push", push},
-		{"pall", pall},
-	};
+	int i = 0, len = 0; 
 
 	if (opcode == NULL)
 	{
 		return (NULL);
 	}
 
-	len = sizeof(instructions) / sizeof(instructions[0]);
+	/*len = sizeof(instructions) / sizeof(instructions[0]);*/
+	len = 2;
 	for (i = 0; i < len; i++)
 	{
 		if (strcmp(instructions[i].opcode, opcode) == 0)
