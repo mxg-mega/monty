@@ -9,12 +9,11 @@
  */
 void pint(stack_t **stack, unsigned int line_number)
 {
-	if (*stack == NULL)
+	if ((*stack)->next == NULL)
 	{
-		printf("%u\n", line_number);
 		fprintf(stderr, "L%u: can't pint, stack empty\n", line_number);
 		errorIndicator++;
 		return;
 	}
-	printf("%u\n", (*stack)->n);
+	printf("%d\n", (*stack)->next->n);
 }
