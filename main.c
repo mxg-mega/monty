@@ -53,6 +53,7 @@ int main(int ac, char **av)
 	{
 		if (errorIndicator != 0)
 		{
+			printf("%d/n", lineCount);
 			prep_exit(buffer, cmd, head, file);
 			exit(EXIT_FAILURE);
 		}
