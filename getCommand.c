@@ -1,5 +1,5 @@
 #include "monty.h"
-#define MAX_ARGS
+#define MAX_ARGS 3
 /**
  * getcommand - function tokenizes the line of buffer taken to cmd and arg
  * @buffer: buffer taken
@@ -16,12 +16,14 @@ char **getcommand(char *buffer)
 	{
 		return (NULL);
 	}
+
 	for (i = 0; i < MAX_ARGS; i++)
 	{
 		args[i] = NULL;
 	}
+
 	token = strtok(buffer, delim);
-	while (token != NULL && argCount < MAX_ARG - 1)
+	while (token != NULL && argCount < MAX_ARGS - 1)
 	{
 		args[argCount] = malloc(strlen(token) + 2);
 		if (args[argCount] == NULL)
@@ -36,3 +38,4 @@ char **getcommand(char *buffer)
 	}
 	args[MAX_ARGS - 1] = NULL;
 	return (args);
+}
