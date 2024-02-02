@@ -13,6 +13,7 @@ void pall(stack_t **stack, __attribute__((unused)) unsigned int line_number)
 
 	if (is_Empty(*stack) == 0)
 	{
+		errorIndicator = 1;
 		return;
 	}
 	tmp = *stack;

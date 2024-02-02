@@ -8,7 +8,10 @@ int count_args(char **cmd);
 instruction_t instructions[] = {
 	{"push", push},
 	{"pall", pall},
+	{"pint", pint},
+	{NULL, NULL}
 };
+int errorIndicator = 0;
 
 /**
  * main - maint entry point
@@ -20,7 +23,7 @@ instruction_t instructions[] = {
 int main(int ac, char **av)
 {
 	FILE *file = NULL;
-	char *buffer = malloc(sizeof(char) * 1024), *pall = "pall";
+	char *buffer = malloc(sizeof(char) * 1024), *push = "push";
 	unsigned int lineCount = 0;
 	int cmdArg = 0;
 	size_t buffsize = 1024;
@@ -47,17 +50,16 @@ int main(int ac, char **av)
 	}
 	while (fgets(buffer, buffsize, file) != NULL)
 	{
+		if (errorIndicator != 0)
+		{
+			prep_exit(buffer, cmd, head, file);
+			exit(EXIT_FAILURE);
+		}
 		++lineCount;
 		cmd = getcommand(buffer);
 		if (cmd == NULL)
 		{
-			free(buffer);
-			fclose(file);
-			free_line(cmd);
-			if (head != NULL)
-			{
-				clear_stack(head);
-			}
+			prep_exit(buffer, cmd, head, file);
 			return (EXIT_FAILURE);
 		}
 
@@ -70,40 +72,25 @@ int main(int ac, char **av)
 		instruct = get_opcode_instruc(cmd[0]);
 		if (instruct == NULL)
 		{
-			if (head != NULL)
-			{
-				clear_stack(head);
-			}
 			fprintf(stderr, "L%u: unknown instruction %s\n", lineCount, cmd[0]);
-			free(buffer);
-			fclose(file);
-			free_line(cmd);
+			prep_exit(buffer, cmd, head, file);
 			return (EXIT_FAILURE);
 		}
 
-		if (strcmp(instruct->opcode, pall) == 0)
-		{
-			instruct->f(&head, lineCount);
-		}
-		else
+		if(strcmp(instruct->opcode, push) == 0)
 		{
 			if (cmd[1] == NULL || is_validNumber(cmd[1]) == 1)
 			{
-				free(buffer);
-				fclose(file);
-				if (head != NULL)
-				{
-					clear_stack(head);
-				}
-				free_line(cmd);
 				fprintf(stderr, "L%u: usage: push integer\n", lineCount);
+				prep_exit(buffer, cmd, head, file);
 				return (EXIT_FAILURE);
 			}
-			else
-			{
-				cmdArg = stringToInteger(cmd[1]);
-				instruct->f(&head, (unsigned int)cmdArg);
-			}
+			cmdArg = stringToInteger(cmd[1]);
+			instruct->f(&head, (unsigned int)cmdArg);
+		}
+		else
+		{
+			instruct->f(&head, lineCount);
 		}
 		free_line(cmd);
 	}
@@ -114,41 +101,27 @@ int main(int ac, char **av)
 }
 
 /**
- * getcommand - function tokenizes the line of buffer taken to cmd and arg
- * @buffer: buffer taken
+ * prep_exit - function prepares and clears all allocated mem before exit
+ * @file: the file to be closed
+ * @buffer: the buffer
+ * @cmd: the commands
+ * @stack: head of the stack
  *
- * Return: 2d array or NULL if malloc fail or any fail
+ * Return: nothing
  */
-char **getcommand(char *buffer)
+void prep_exit(char *buffer, char **cmd, stack_t *stack, FILE *file)
 {
-	char *token = NULL, *delim = " \n\t";
-	int argCount = 0, i = 0;
-	char **args = malloc(sizeof(char *) * 3);
-
-	if (args == NULL)
+	if (buffer == NULL || cmd == NULL || file == NULL)
 	{
-		return (NULL);
+		return;
 	}
-	for (i = 0; i < 3; i++)
+	if (stack != NULL)
 	{
-		args[i] = NULL;
+		clear_stack(stack);
 	}
-	token = strtok(buffer, delim);
-	while (token != NULL && argCount < 2)
-	{
-		args[argCount] = malloc(strlen(token) + 2);
-		if (args[argCount] == NULL)
-		{
-			fprintf(stderr, "Error: malloc failed\n");
-			return (NULL);
-		}
-		strcpy(args[argCount], token);
-		args[argCount][strlen(token)] = '\0';
-		argCount++;
-		token = strtok(NULL, delim);
-	}
-	args[2] = NULL;
-	return (args);
+	free(buffer);
+	free_line(cmd);
+	fclose(file);
 }
 
 /**

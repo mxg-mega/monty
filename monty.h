@@ -38,18 +38,35 @@ typedef struct instruction_s
 	void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
 
+/**
+ * struct operation_s - instruction and arg count
+ * @instruction: the instruction
+ * @has_arg: integer to indicate arg
+ *
+ * Description: helps anotate if an instruction
+ * has args or not i.e 0 or 1
+ */
+/*typedef operation_s
+{
+	instruction_t *instruction;
+	int has_arg;
+} ops_t;*/
 extern instruction_t instructions[];
+extern int errorIndicator;
 
 char** getcommand(char *buffer);
 void free_line(char **array);
 int is_Empty(stack_t *stack);
 int is_validNumber(const char *str);
+void prep_exit(char *buffer, char **cmd, stack_t *stack, FILE *file);
 
-extern void push(stack_t **stack, unsigned int line_number);
-extern void pall(stack_t **stack, unsigned int line_number);
+void push(stack_t **stack, unsigned int line_number);
+void pall(stack_t **stack, unsigned int line_number);
+void pint(stack_t **stack, unsigned int line_number);
 
 void clear_stack(stack_t *head);
 instruction_t *get_opcode_instruc(char *opcode);
 int stringToInteger(const char *str);
+void *_realloc(void *ptr, unsigned int  oldsize, unsigned int newsize);
 
 #endif /*_MONTY_H_*/

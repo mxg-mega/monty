@@ -8,7 +8,7 @@
  */
 instruction_t *get_opcode_instruc(char *opcode)
 {
-	int i = 0, len = 0; 
+	int i = 0, len = 0;
 
 	if (opcode == NULL)
 	{
@@ -16,7 +16,9 @@ instruction_t *get_opcode_instruc(char *opcode)
 	}
 
 	/*len = sizeof(instructions) / sizeof(instructions[0]);*/
-	len = 2;
+	for (len = 0; instructions[len].opcode != NULL;len++)
+	{
+	}
 	for (i = 0; i < len; i++)
 	{
 		if (strcmp(instructions[i].opcode, opcode) == 0)
