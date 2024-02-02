@@ -16,7 +16,7 @@ instruction_t *get_opcode_instruc(char *opcode)
 	}
 
 	/*len = sizeof(instructions) / sizeof(instructions[0]);*/
-	for (len = 0; instructions[len].opcode != NULL;len++)
+	for (len = 0; instructions[len].opcode != NULL; len++)
 	{
 	}
 	for (i = 0; i < len; i++)

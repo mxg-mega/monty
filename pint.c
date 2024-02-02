@@ -3,7 +3,7 @@
 /**
  * pint - function prints the value at the top of the stack
  * @stack: the head/top of the stack
- * @lineNumber: number of the line
+ * @line_number: number of the line
  *
  * Return: nothing it exits if error
  */

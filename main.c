@@ -77,7 +77,7 @@ int main(int ac, char **av)
 			return (EXIT_FAILURE);
 		}
 
-		if(strcmp(instruct->opcode, push) == 0)
+		if (strcmp(instruct->opcode, push) == 0)
 		{
 			if (cmd[1] == NULL || is_validNumber(cmd[1]) == 1)
 			{
