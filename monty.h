@@ -39,26 +39,31 @@ typedef struct instruction_s
 } instruction_t;
 
 /**
- * struct operation_s - instruction and arg count
+ * struct operation_s - cleanup operation
  * @instruction: the instruction
- * @has_arg: integer to indicate arg
+ * @buffer: buffer/line
+ * @cmd: the tokenized args
+ * @file: the file used
  *
- * Description: helps anotate if an instruction
- * has args or not i.e 0 or 1
+ * Description: helps to cleaup
+ * memory before exit by holding the cleanup variables
  */
-/*typedef operation_s
+typedef struct operation_s
 {
-	instruction_t *instruction;
-	int has_arg;
-} ops_t;*/
+	char *buffer;
+	char **cmd;
+	FILE *file;
+} ops_t;
+
 extern instruction_t instructions[];
 extern int errorIndicator;
+extern ops_t container;
 
 char** getcommand(char *buffer);
 void free_line(char **array);
 int is_Empty(stack_t *stack);
 int is_validNumber(const char *str);
-void prep_exit(char *buffer, char **cmd, stack_t *stack, FILE *file);
+void prep_exit(stack_t *stack);
 
 void push(stack_t **stack, unsigned int line_number);
 void pall(stack_t **stack, unsigned int line_number);

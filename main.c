@@ -13,7 +13,8 @@ instruction_t instructions[] = {
 	{"swap", swap},
 	{NULL, NULL}
 };
-int errorIndicator = 0;
+
+ops_t container = {NULL, NULL, NULL};
 
 /**
  * main - maint entry point
@@ -24,12 +25,11 @@ int errorIndicator = 0;
  */
 int main(int ac, char **av)
 {
-	FILE *file = NULL;
+	FILE *file;
 	char *buffer = malloc(sizeof(char) * 1024), *push = "push";
 	unsigned int lineCount = 0;
 	int cmdArg = 0;
 	size_t buffsize = 1024;
-	char **cmd = NULL;
 	instruction_t *instruct = NULL;
 	stack_t *head = NULL;
 
@@ -43,77 +43,71 @@ int main(int ac, char **av)
 		fprintf(stderr, "Error: malloc failed\n");
 		exit(EXIT_FAILURE);
 	}
-	memset(buffer, 0, 1024);
+	memset(buffer, 0, buffsize);
 	file = fopen(av[1], "r");
 	if (file == NULL)
 	{
 		fprintf(stderr, "Error: Can't open file %s\n", av[1]);
 		exit(EXIT_FAILURE);
 	}
+	container.file = file;
 	while (fgets(buffer, buffsize, file) != NULL)
 	{
-		if (errorIndicator != 0)
-		{
-			prep_exit(buffer, cmd, head, file);
-			exit(EXIT_SUCCESS);
-		}
 		++lineCount;
-		cmd = getcommand(buffer);
-		if (cmd == NULL)
+		container.buffer = buffer;
+		container.cmd = getcommand(container.buffer);
+		if (container.cmd == NULL)
 		{
-			prep_exit(buffer, cmd, head, file);
+			prep_exit(head);
 			exit(EXIT_FAILURE);
 		}
 
-		if (cmd[0] == NULL)
+		if (container.cmd[0] == NULL)
 		{
-			free_line(cmd);
+			free_line(container.cmd);
 			continue;
 		}
 
-		instruct = get_opcode_instruc(cmd[0]);
+		instruct = get_opcode_instruc(container.cmd[0]);
 		if (instruct == NULL)
 		{
-			fprintf(stderr, "L%u: unknown instruction %s\n", lineCount, cmd[0]);
-			prep_exit(buffer, cmd, head, file);
+			fprintf(stderr, "L%u: unknown instruction %s\n", lineCount, container.cmd[0]);
+			prep_exit(head);
 			exit(EXIT_FAILURE);
 		}
 
 		if (strcmp(instruct->opcode, push) == 0)
 		{
-			if (cmd[1] == NULL || is_validNumber(cmd[1]) == 1)
+			if (container.cmd[1] == NULL || is_validNumber(container.cmd[1]) == 1)
 			{
 				fprintf(stderr, "L%u: usage: push integer\n", lineCount);
-				prep_exit(buffer, cmd, head, file);
+				prep_exit(head);
 				exit(EXIT_FAILURE);
 			}
-			cmdArg = stringToInteger(cmd[1]);
+			cmdArg = stringToInteger(container.cmd[1]);
 			instruct->f(&head, (unsigned int)cmdArg);
 		}
 		else
 		{
 			instruct->f(&head, lineCount);
 		}
-		free_line(cmd);
+		free_line(container.cmd);
 	}
-	free(buffer);
-	fclose(file);
+	free(container.buffer);
+	fclose(container.file);
 	clear_stack(head);
 	return (EXIT_SUCCESS);
 }
 
 /**
  * prep_exit - function prepares and clears all allocated mem before exit
- * @file: the file to be closed
- * @buffer: the buffer
- * @cmd: the commands
  * @stack: head of the stack
  *
  * Return: nothing
  */
-void prep_exit(char *buffer, char **cmd, stack_t *stack, FILE *file)
+void prep_exit(stack_t *stack)
 {
-	if (buffer == NULL || cmd == NULL || file == NULL)
+	if (container.buffer == NULL || container.file == NULL || container.cmd == NULL)
 	{
 		return;
 	}
@@ -121,9 +115,9 @@ void prep_exit(char *buffer, char **cmd, stack_t *stack, FILE *file)
 	{
 		clear_stack(stack);
 	}
-	free(buffer);
-	free_line(cmd);
-	fclose(file);
+	free(container.buffer);
+	free_line(container.cmd);
+	fclose(container.file);
 }
 
 /**
