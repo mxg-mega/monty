@@ -54,14 +54,14 @@ int main(int ac, char **av)
 		if (errorIndicator != 0)
 		{
 			prep_exit(buffer, cmd, head, file);
-			exit(EXIT_FAILURE);
+			exit(EXIT_SUCCESS);
 		}
 		++lineCount;
 		cmd = getcommand(buffer);
 		if (cmd == NULL)
 		{
 			prep_exit(buffer, cmd, head, file);
-			return (EXIT_FAILURE);
+			exit(EXIT_FAILURE);
 		}
 
 		if (cmd[0] == NULL)
@@ -75,7 +75,7 @@ int main(int ac, char **av)
 		{
 			fprintf(stderr, "L%u: unknown instruction %s\n", lineCount, cmd[0]);
 			prep_exit(buffer, cmd, head, file);
-			return (EXIT_FAILURE);
+			exit(EXIT_FAILURE);
 		}
 
 		if (strcmp(instruct->opcode, push) == 0)
@@ -84,7 +84,7 @@ int main(int ac, char **av)
 			{
 				fprintf(stderr, "L%u: usage: push integer\n", lineCount);
 				prep_exit(buffer, cmd, head, file);
-				return (EXIT_FAILURE);
+				exit(EXIT_FAILURE);
 			}
 			cmdArg = stringToInteger(cmd[1]);
 			instruct->f(&head, (unsigned int)cmdArg);
