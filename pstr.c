@@ -15,8 +15,7 @@ void pstr(stack_t **stack, __attribute__ ((unused)) unsigned int line_number)
 	if (is_Empty(*stack) == 0)
 	{
 		putchar('\n');
-		prep_exit(*stack);
-		exit(EXIT_FAILURE);
+		return;
 	}
 	tmp = *stack;
 	while (tmp != NULL)
@@ -25,8 +24,6 @@ void pstr(stack_t **stack, __attribute__ ((unused)) unsigned int line_number)
 		{
 			putchar('\n');
 			return;
-			/*prep_exit(*stack);
-			exit(EXIT_FAILURE);*/
 		}
 		putchar(tmp->n);
 		tmp = tmp->next;
