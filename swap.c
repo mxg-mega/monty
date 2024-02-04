@@ -20,11 +20,21 @@ void swap(stack_t **stack, unsigned int line_number)
 
 	tmp = *stack;
 	tmp_n = (*stack)->next;
-	tmp->next = tmp_n->next;
-	tmp->prev = tmp_n;
+	if (tmp_n->next == NULL)
+	{
+		tmp_n->next = tmp;
 
-	tmp_n->next->prev = tmp;
-	tmp_n->next = tmp;
+		tmp->prev = tmp_n;
+		tmp->next = NULL;
+	}
+	else
+	{
+		tmp->next = tmp_n->next;
+		tmp->prev = tmp_n;
+
+		tmp_n->next->prev = tmp;
+		tmp_n->next = tmp;
+	}
 	tmp_n->prev = NULL;
 	*stack = tmp_n;
 
