@@ -13,6 +13,10 @@ instruction_t instructions[] = {
 	{"swap", swap},
 	{"add", add},
 	{"nop", nop},
+	{"sub", sub},
+	{"div", _div},
+	{"mul", _mul},
+	{"mod", _mod},
 	{NULL, NULL}
 };
 
@@ -64,7 +68,7 @@ int main(int ac, char **av)
 			exit(EXIT_FAILURE);
 		}
 
-		if (container.cmd[0] == NULL)
+		if (container.cmd[0] == NULL || container.cmd[0][0] == COMMENT)
 		{
 			free_line(container.cmd);
 			continue;
@@ -99,27 +103,6 @@ int main(int ac, char **av)
 	fclose(container.file);
 	clear_stack(head);
 	return (EXIT_SUCCESS);
-}
-
-/**
- * prep_exit - function prepares and clears all allocated mem before exit
- * @stack: head of the stack
- *
- * Return: nothing
- */
-void prep_exit(stack_t *stack)
-{
-	if (container.buffer == NULL || container.file == NULL || container.cmd == NULL)
-	{
-		return;
-	}
-	if (stack != NULL)
-	{
-		clear_stack(stack);
-	}
-	free(container.buffer);
-	free_line(container.cmd);
-	fclose(container.file);
 }
 
 /**
