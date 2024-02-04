@@ -21,6 +21,8 @@ void _div(stack_t **stack, unsigned int line_number)
 	if ((*stack)->n == 0)
 	{
 		fprintf(stderr, "L%u: division by zero", line_number);
+		prep_exit(*stack);
+		exit(EXIT_FAILURE);
 	}
 	tmp = *stack;
 	sum = (*stack)->next->n / tmp->n;
