@@ -20,9 +20,9 @@ void _mod(stack_t **stack, unsigned int line_number)
 		prep_exit(*stack);
 		exit(EXIT_FAILURE);
 	}
-	if ((*stack)->next->n == 0)
+	if ((*stack)->n == 0)
 	{
-		fprintf(stderr, "L%u: division by zero", line_number);
+		fprintf(stderr, "L%u: division by zero\n", line_number);
 		prep_exit(*stack);
 		exit(EXIT_FAILURE);
 	}
